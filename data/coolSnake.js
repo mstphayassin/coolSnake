@@ -544,7 +544,7 @@ const play = () => {
 		gameState.counter += dt;
 		gameState.spawnCounter+=dt;
 	} else {
-		gameState.scoreTimer = 0
+		gameState.scoreTime = 0
 	}
 	/*if (gameState.sharks.length < 1){
 		gameState.sharks.push(new Charger(getApplePos(),4));
@@ -705,6 +705,7 @@ const play = () => {
 				gameState.entities.push(new ExcitingText(gameState.apples[k].pos[0],gameState.apples[k].pos[1],SNAKEGROWTH,GOODGREEN));
 				gameState.Cam.shakeAmp = CAMERASHAKE;
 				gameState.appleGet = SNAKEGROWTH;
+				if (!gameState.dead) {gameState.scoreTime += gameState.appleGet}
 				gameState.applePos = getApplePos();
 				explodeSound.stop();
 				explodeSound.play();
@@ -764,9 +765,25 @@ const play = () => {
 		}
 	}
 	if (gameState.survival){
-		if (!gameState.dead && gameState.spawnCounter > 1 && gameState.score > SNAKEGROWTH && gameState.sharks.length < (gameState.counter**0.5)){
+		if (!gameState.dead && gameState.spawnCounter > 1 && gameState.score > SNAKEGROWTH && gameState.sharks.length < (gameState.counter/5)){
 			gameState.spawnCounter = 0;
-			let newSharks = [SlowingWallEnemy2, WallEnemy2, SlowingStrongLaserShooter,SlowingWeakLaserShooter,SlipperyWallEnemy,LaserShooter, FastShark,WeakLaserShooter,StrongLaserShooter,WallEnemy,ShieldEnemy,WallShark,Charger]
+			let newSharks = [FastShark, WeakLaserShooter, StrongLaserShooter,LaserShooter]
+			if (gameState.scoreTime > 40) {
+				newSharks.push(SlowingWeakLaserShooter)
+				newSharks.push(WallEnemy)
+				newSharks.push(SlowingStrongLaserShooter)
+				newSharks.push(ShieldEnemy)
+			}
+			if (gameState.scoreTime > 80) {
+				newSharks.push(WallShark)
+				newSharks.push(SlowingWallEnemy2)
+			}
+			if (gameState.scoreTime > 200) {
+				newSharks.push(WallEnemy2)
+				newSharks.push(Charger)
+				newSharks.push(SlipperyWallEnemy)
+			}
+			
 			let choice = Math.floor(Math.random()*newSharks.length)
 			let newShark = new newSharks[choice]()		
 			if (newShark) {
@@ -810,6 +827,7 @@ const play = () => {
 			if (shark.color !== LIGHTGRAY) {gameState.colorList.push(shark.color);}
 			gameState.particleList.push(new Particles(gameState.snakePos[0],gameState.snakePos[1],PARTICLEVEL/2,RED2,PARTICLESIZE/2.0))
 			gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1],gameState.appleGet,GOODGREEN))
+			if (!gameState.dead) {gameState.scoreTime += gameState.appleGet}
 			gameState.Cam.shakeAmp = CAMERASHAKE
 			gameState.sharks[s].targetLen -= 1;
 			gameState.sharks[s].bod.splice(kols.indexOf(true),1)
@@ -826,6 +844,7 @@ const play = () => {
 			shark.targetLen = 0;
 			gameState.particleList.push(new Particles(gameState.snakePos[0],gameState.snakePos[1],PARTICLEVEL/2,RED2,PARTICLESIZE/2.0))
 			gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1],gameState.appleGet,GOODGREEN))
+			if (!gameState.dead) {gameState.scoreTime += gameState.appleGet}
 			gameState.Cam.shakeAmp = CAMERASHAKE
 			gameState.sharks[s].bod.splice(kols.indexOf(true),1)
 		}
@@ -850,8 +869,6 @@ const play = () => {
 		gameState.colorList.push(gameState.colorList[gameState.colorList.length-1])
 	}
 	gameState.colorList[0] = WHITE;
-	
-	if (gameState.score > 1 && !gameState.dead) {gameState.scoreTime += Math.floor(gameState.score*10) / 100}
 	
 	gameState.Cam.update(dt);
 	ctx.fillStyle = BLACK;
