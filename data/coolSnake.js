@@ -233,6 +233,7 @@ class ExcitingText{
 		for (let i = 0; i < entities.length; i++){
 			if ((entities[i].pos[0]-this.pos[0])**2 + (entities[i].pos[1]-this.pos[1])**2 < 10000000**2 && this !== entities[i] && this.value*entities[i].value > 0){
 				entities.push(new ExcitingText(entities[i].pos[0],entities[i].pos[1],this.value + entities[i].value, this.color))
+				if (this.value > 0) {gameState.scoreTime += this.value + entities[i].value}
 				entities.splice(i,1);
 				entities.splice(entities.indexOf(this),1);
 			}
@@ -507,6 +508,7 @@ document.addEventListener('keydown', event => {
 	case 80:
 		// p
 		gameState.dead = true
+		gameState.scoreTime = 0
 		gameState.snakeList = [];
 		gameState.colorList = [];
 		window.clearTimeout(gameState.nextFrame);
@@ -543,8 +545,6 @@ const play = () => {
 	if (gameState.snakeList.length > 1 || gameState.dead){
 		gameState.counter += dt;
 		gameState.spawnCounter+=dt;
-	} else {
-		gameState.scoreTime = 0
 	}
 	/*if (gameState.sharks.length < 1){
 		gameState.sharks.push(new Charger(getApplePos(),4));
@@ -768,17 +768,17 @@ const play = () => {
 		if (!gameState.dead && gameState.spawnCounter > 1 && gameState.score > SNAKEGROWTH && gameState.sharks.length < (gameState.counter/5)){
 			gameState.spawnCounter = 0;
 			let newSharks = [FastShark, WeakLaserShooter, StrongLaserShooter,LaserShooter]
-			if (gameState.scoreTime > 40) {
+			if (gameState.scoreTime > 100) {
 				newSharks.push(SlowingWeakLaserShooter)
 				newSharks.push(WallEnemy)
 				newSharks.push(SlowingStrongLaserShooter)
 				newSharks.push(ShieldEnemy)
 			}
-			if (gameState.scoreTime > 80) {
+			if (gameState.scoreTime > 200) {
 				newSharks.push(WallShark)
 				newSharks.push(SlowingWallEnemy2)
 			}
-			if (gameState.scoreTime > 200) {
+			if (gameState.scoreTime > 400) {
 				newSharks.push(WallEnemy2)
 				newSharks.push(Charger)
 				newSharks.push(SlipperyWallEnemy)
