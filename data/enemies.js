@@ -116,7 +116,7 @@ class Shark {
 			ctx.fillRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
 			ctx.strokeStyle = 'rgba(255,0,0,0.2)';
 			ctx.lineWidth = 3;
-			ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE)
+			//ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE)
 		}
 	}
 	extraUpdate(){
@@ -161,7 +161,7 @@ class SplitterShark extends Shark {
 			ctx.fillRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
 			ctx.strokeStyle = 'rgba(255,0,0,0.2)';
 			ctx.lineWidth = 3;
-			ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE)
+			//ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE)
 		}
 	}
 }
@@ -224,7 +224,7 @@ class WeakLaserShooter {
 			ctx.fillRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
 			ctx.strokeStyle = 'rgba(255,0,0,0.2)';
 			ctx.lineWidth = 3;
-			ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
+			//ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
 		}
 	}
 }
@@ -388,7 +388,7 @@ class StrongLaserShooter {
 			ctx.fillRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
 			ctx.lineWidth = 3;
 			ctx.strokeStyle = 'rgba(255,0,0,0.2)';
-			ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
+			//ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
 		}
 	}
 }
@@ -541,7 +541,7 @@ class LaserShooter extends StrongLaserShooter { // shoots 4 lasers in the basic 
 			ctx.fillRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
 			ctx.lineWidth = 3;
 			ctx.strokeStyle = 'rgba(255,0,0,0.2)';
-			ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
+			//ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
 		}
 	}
 }
@@ -640,8 +640,8 @@ class WallEnemy {
 				ctx.strokeStyle = 'rgba(255,0,0,0.2)';
 			}
 			ctx.fillRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
-			ctx.lineWidth = 3;
-			ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE)
+			//ctx.lineWidth = 3;
+			//ctx.strokeRect(this.bod[b][0]-campos[0],this.bod[b][1]-campos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE)
 		}
 	}
 }
