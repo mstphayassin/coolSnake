@@ -116,7 +116,9 @@ const Camera = {
 		ctx.fillRect(pos[0]-this.pos[0],pos[1]-this.pos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
 		if (outline){
 			ctx.strokeStyle = outline;
+			ctx.lineWidth = 1
 			ctx.strokeRect(pos[0]-this.pos[0],pos[1]-this.pos[1],BLOCKSIZE-EDGESIZE,BLOCKSIZE-EDGESIZE);
+			ctx.lineWidth = 1
 		}
 	},
 	update: function(dt){
@@ -202,12 +204,14 @@ class ExcitingText{
 	constructor(x,y,value,color,fontSize=18){
 		let fontS = fontSize;
 		this.value = value;
-		if (value > 0){
+		if (value > 0 && Number.isInteger(value)){
 			this.text = "+" + value;
 			fontS += 3*value;
-		} else {
+		} else if (Number.isInteger(value)) {
 			this.text = "" + value;
 			fontS -= 3*value;
+		} else {
+			this.text = value;
 		}
 		this.color = color;
 		this.font = fontS + "px Free Sans Bold";
@@ -231,9 +235,14 @@ class ExcitingText{
 			this.dead = true;
 		}
 		for (let i = 0; i < entities.length; i++){
-			if ((entities[i].pos[0]-this.pos[0])**2 + (entities[i].pos[1]-this.pos[1])**2 < 10000000**2 && this !== entities[i] && this.value*entities[i].value > 0){
-				entities.push(new ExcitingText(entities[i].pos[0],entities[i].pos[1],this.value + entities[i].value, this.color))
-				if (this.value > 0) {gameState.scoreTime += this.value + entities[i].value}
+			if ((entities[i].pos[0]-this.pos[0])**2 + (entities[i].pos[1]-this.pos[1])**2 < 10000000**2 && this !== entities[i] && this.value*entities[i].value > 0 && Number.isInteger(this.value)){
+				
+				if (this.value > 0) {
+					gameState.scoreTime += entities[i].value
+					entities.push(new ExcitingText(entities[i].pos[0],entities[i].pos[1], this.value + entities[i].value, this.color))
+				} else {
+					entities.push(new ExcitingText(entities[i].pos[0],entities[i].pos[1], this.value + entities[i].value, this.color))
+				}
 				entities.splice(i,1);
 				entities.splice(entities.indexOf(this),1);
 			}
@@ -438,6 +447,8 @@ let gameState = {
 	scoreTime: 0,
 	SFXmuted: false,
 	nextFrame: -1,
+	spawnRate: 1,
+	enemiesUnlocked: 0
 };
 
 document.addEventListener('keydown', event => {
@@ -765,8 +776,10 @@ const play = () => {
 		}
 	}
 	if (gameState.survival){
-		if (!gameState.dead && gameState.spawnCounter > 1 && gameState.score > SNAKEGROWTH && gameState.sharks.length < (gameState.counter/5)){
+		if (!gameState.dead && gameState.spawnCounter > gameState.spawnRate && gameState.score > SNAKEGROWTH && gameState.sharks.length < Math.min(25, Math.sqrt(gameState.scoreTime*0.5))){
 			gameState.spawnCounter = 0;
+			let newSharks = []
+			/*
 			let newSharks = [FastShark, WeakLaserShooter, StrongLaserShooter,LaserShooter]
 			if (gameState.scoreTime > 100) {
 				newSharks.push(SlowingWeakLaserShooter)
@@ -782,11 +795,86 @@ const play = () => {
 				newSharks.push(WallEnemy2)
 				newSharks.push(Charger)
 				newSharks.push(SlipperyWallEnemy)
+			}*/
+			if (gameState.scoreTime > 10) {
+				newSharks = [FastShark]
+				gameState.spawnRate = 5
+			}
+			
+			if (gameState.scoreTime > 50) {
+				newSharks = [FastShark, WeakLaserShooter]
+				gameState.spawnRate = 2
+			}
+			
+			if (gameState.scoreTime > 150) {
+				newSharks = [FastShark, WeakLaserShooter, LaserShooter]
+				gameState.spawnRate = 2
+			}
+			
+			if (gameState.scoreTime > 250) {
+				newSharks = [FastShark, WeakLaserShooter, LaserShooter, StrongLaserShooter]
+				gameState.spawnRate = 2
+			}
+			
+			if (gameState.scoreTime > 400) {
+				newSharks = [FastShark, WeakLaserShooter, LaserShooter, StrongLaserShooter, WallEnemy]
+				gameState.spawnRate = 1.5
+			}
+			
+			if (gameState.scoreTime > 550) {
+				newSharks = [SlowingWeakLaserShooter, SlowingStrongLaserShooter, WallEnemy]
+				gameState.spawnRate = 0.75
+			}
+			
+			if (gameState.scoreTime > 750) {
+				newSharks = [WeakLaserShooter, StrongLaserShooter, LaserShooter, 
+					SlowingWeakLaserShooter, SlowingStrongLaserShooter, WallEnemy, ShieldEnemy]
+				gameState.spawnRate = 1.5
+			}
+			
+			if (gameState.scoreTime > 1000) {
+				newSharks = [WeakLaserShooter, StrongLaserShooter, LaserShooter, 
+					SlowingWeakLaserShooter, SlowingStrongLaserShooter, WallEnemy, ShieldEnemy, WallShark]
+				gameState.spawnRate = 1.5
+			}
+			
+			if (gameState.scoreTime > 1250) {
+				newSharks = [WeakLaserShooter, StrongLaserShooter, LaserShooter, 
+					SlowingWeakLaserShooter, SlowingStrongLaserShooter, WallEnemy, ShieldEnemy, WallShark, SlowingWallEnemy2]
+				gameState.spawnRate = 1
+			}
+			
+			if (gameState.scoreTime > 1750) {
+				newSharks = [WeakLaserShooter, StrongLaserShooter, LaserShooter, 
+					SlowingWeakLaserShooter, SlowingStrongLaserShooter, WallEnemy, 
+					ShieldEnemy, WallShark, SlowingWallEnemy2, WallEnemy2]
+				gameState.spawnRate = 1.5
+			}
+			
+			if (gameState.scoreTime > 2250) {
+				newSharks = [WeakLaserShooter, StrongLaserShooter, LaserShooter, 
+					SlowingWeakLaserShooter, SlowingStrongLaserShooter, WallEnemy, 
+					ShieldEnemy, WallShark, SlowingWallEnemy2, WallEnemy2, SlipperyWallEnemy]
+				gameState.spawnRate = 1
+			}
+			
+			if (gameState.scoreTime > 3000) {
+				newSharks = [WeakLaserShooter, StrongLaserShooter, LaserShooter, 
+					SlowingWeakLaserShooter, SlowingStrongLaserShooter, WallEnemy, 
+					ShieldEnemy, WallShark, SlowingWallEnemy2, WallEnemy2, SlipperyWallEnemy, Charger]
+				gameState.spawnRate = 1
 			}
 			
 			let choice = Math.floor(Math.random()*newSharks.length)
-			let newShark = new newSharks[choice]()		
-			if (newShark) {
+			if (newSharks[choice]) {
+				let newShark = new newSharks[choice]()
+				if (choice === 5) {
+					for (let s = 0; s < gameState.sharks.length; s++) {
+						if (gameState.sharks[s].pos === newShark.pos) {
+							newShark.dead = true;
+						}
+					}
+				}
 				gameState.sharks.push(newShark);
 				gameState.curWaveEnemies++;
 			}
@@ -886,6 +974,55 @@ const play = () => {
 	} else if (gameState.survival) {
 		if (gameState.scoreTime > gameState.highscore) {
 			gameState.highscore = gameState.scoreTime
+			// 10, 50, 150, 250, 400, 550, 750, 1000, 1250, 1750, 2250, 3000
+			if (gameState.highscore > 10 && gameState.enemiesUnlocked < 1) {
+				gameState.enemiesUnlocked = 1
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 50 && gameState.enemiesUnlocked < 2) {
+				gameState.enemiesUnlocked = 2
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 150 && gameState.enemiesUnlocked < 3) {
+				gameState.enemiesUnlocked = 3
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 250 && gameState.enemiesUnlocked < 4) {
+				gameState.enemiesUnlocked = 4
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 400 && gameState.enemiesUnlocked < 5) {
+				gameState.enemiesUnlocked = 5
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 550 && gameState.enemiesUnlocked < 6) {
+				gameState.enemiesUnlocked = 6
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 750 && gameState.enemiesUnlocked < 7) {
+				gameState.enemiesUnlocked = 7
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 1000 && gameState.enemiesUnlocked < 8) {
+				gameState.enemiesUnlocked = 8
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 1250 && gameState.enemiesUnlocked < 9) {
+				gameState.enemiesUnlocked = 9
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 1750 && gameState.enemiesUnlocked < 10) {
+				gameState.enemiesUnlocked = 10
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 2250 && gameState.enemiesUnlocked < 11) {
+				gameState.enemiesUnlocked = 11
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'New enemy unlocked!',GOODGREEN, 25))
+			}
+			if (gameState.highscore > 3000 && gameState.enemiesUnlocked < 12) {
+				gameState.enemiesUnlocked = 12
+				gameState.entities.push(new ExcitingText(gameState.snakePos[0],gameState.snakePos[1]-30,'Final enemy unlocked!',GOODGREEN, 25))
+			}
 			setCookie('highscore', gameState.highscore)
 		}
 		ctx.fillText('Score: ' + Math.floor(gameState.scoreTime*100)/100,20,50)
@@ -916,7 +1053,7 @@ const play = () => {
 	gameState.hurtCounter -= dt;
 	if (!gameState.dead){
 		for (let b = 0; b < gameState.snakeList.length; b++){
-			gameState.Cam.draw(gameState.snakeList[b],gameState.colorList[gameState.snakeList.length-1-gameState.snakeList.indexOf(gameState.snakeList[b])]) // the python code is more concise for this. all this does is matches the elements in the colorlist with those in the snakelist.
+			gameState.Cam.draw(gameState.snakeList[b],gameState.colorList[gameState.snakeList.length-1-gameState.snakeList.indexOf(gameState.snakeList[b])], 'white ') // the python code is more concise for this. all this does is matches the elements in the colorlist with those in the snakelist.
 			if (gameState.hurtCounter > 0){
 				gameState.Cam.draw(gameState.snakeList[b],'rgba(255,255,255,190)');
 			}
@@ -944,4 +1081,5 @@ const play = () => {
 	}
 }
 
+//setCookie('highscore', 0)
 mainMenu();
