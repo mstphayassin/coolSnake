@@ -1098,13 +1098,15 @@ function getTouches(evt) {
 
 function handleTouchStart(evt) {
     const firstTouch = getTouches(evt)[0];
-	evt.preventDefault()                                      
+	evt.preventDefault()
+	ev.stopImmediatePropagation();                                      
     xDown = firstTouch.clientX;                                      
     yDown = firstTouch.clientY;                                      
 };                                                
 
 function handleTouchMove(evt) {
 	evt.preventDefault()
+	ev.stopImmediatePropagation();
     if ( ! xDown || ! yDown ) {
         return;
     }
