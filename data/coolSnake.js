@@ -549,6 +549,7 @@ gameState.appleColor = COLORCHOICES[Math.floor(Math.random() * COLORCHOICES.leng
 gameState.highscore = Math.floor(getCookie('highscore')*100)/100
 if (gameState.highscore === "") {gameState.highscore = 0}
 const play = () => {
+	window.scrollTo(0, 0);
 	let now = Date.now();
 	let dt = (now - lastTime)/1000.0;
 	lastTime = now;
@@ -1117,7 +1118,7 @@ function handleTouchMove(evt) {
     let xDiff = xDown - xUp;
     let yDiff = yDown - yUp;
 
-    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+    if ( Math.abs( xDiff ) > 30) {
         if ( xDiff > 0 ) {
             /* left swipe */ 
 			if (!(gameState.lastDirection===RIGHT) && !gameState.movedThisFrame){			
@@ -1135,7 +1136,8 @@ function handleTouchMove(evt) {
 				gameState.nextDirection = RIGHT;
 			}
         }                       
-    } else {
+    } 
+	if (Math.abs( yDiff ) > 30) {
         if ( yDiff > 0 ) {
             /* up swipe */
 			if (!(gameState.lastDirection===DOWN) && !gameState.movedThisFrame){			
