@@ -1100,14 +1100,14 @@ function getTouches(evt) {
 function handleTouchStart(evt) {
     const firstTouch = getTouches(evt)[0];
 	evt.preventDefault()
-	ev.stopImmediatePropagation();                                      
+	//ev.stopImmediatePropagation();                                      
     xDown = firstTouch.clientX;                                      
     yDown = firstTouch.clientY;                                      
 };                                                
 
 function handleTouchMove(evt) {
 	evt.preventDefault()
-	ev.stopImmediatePropagation();
+	//ev.stopImmediatePropagation();
     if ( ! xDown || ! yDown ) {
         return;
     }
