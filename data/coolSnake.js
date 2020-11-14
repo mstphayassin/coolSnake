@@ -1118,7 +1118,7 @@ function handleTouchMove(evt) {
     let xDiff = xDown - xUp;
     let yDiff = yDown - yUp;
 
-    if ( Math.abs( xDiff ) > 10) {
+    if ( Math.abs( xDiff ) > 0) {
         if ( xDiff > 0 ) {
             /* left swipe */ 
 			if (!(gameState.lastDirection===RIGHT) && !gameState.movedThisFrame){			
@@ -1137,7 +1137,7 @@ function handleTouchMove(evt) {
 			}
         }                       
     } 
-	if (Math.abs( yDiff ) > 10) {
+	if (Math.abs( yDiff ) > 0) {
         if ( yDiff > 0 ) {
             /* up swipe */
 			if (!(gameState.lastDirection===DOWN) && !gameState.movedThisFrame){			
