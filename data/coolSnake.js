@@ -1083,3 +1083,78 @@ const play = () => {
 
 //setCookie('highscore', 0)
 mainMenu();
+
+document.addEventListener('touchstart', handleTouchStart, false);        
+document.addEventListener('touchmove', handleTouchMove, false);
+
+// got this from stack exchange
+let xDown = null;                                                        
+let yDown = null;
+
+function getTouches(evt) {
+  return evt.touches ||             // browser API
+         evt.originalEvent.touches; // jQuery
+}                                                     
+
+function handleTouchStart(evt) {
+    const firstTouch = getTouches(evt)[0];
+	evt.preventDefault()                                      
+    xDown = firstTouch.clientX;                                      
+    yDown = firstTouch.clientY;                                      
+};                                                
+
+function handleTouchMove(evt) {
+	evt.preventDefault()
+    if ( ! xDown || ! yDown ) {
+        return;
+    }
+
+    let xUp = evt.touches[0].clientX;                                    
+    let yUp = evt.touches[0].clientY;
+
+    let xDiff = xDown - xUp;
+    let yDiff = yDown - yUp;
+
+    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+        if ( xDiff > 0 ) {
+            /* left swipe */ 
+			if (!(gameState.lastDirection===RIGHT) && !gameState.movedThisFrame){			
+				gameState.direction = LEFT;
+				gameState.movedThisFrame = 1;
+			} else {
+				gameState.nextDirection = LEFT;
+			}
+        } else {
+            /* right swipe */
+			if (!(gameState.lastDirection===LEFT) && !gameState.movedThisFrame){			
+				gameState.direction = RIGHT;
+				gameState.movedThisFrame = 1;
+			} else {
+				gameState.nextDirection = RIGHT;
+			}
+        }                       
+    } else {
+        if ( yDiff > 0 ) {
+            /* up swipe */
+			if (!(gameState.lastDirection===DOWN) && !gameState.movedThisFrame){			
+				gameState.direction = UP;
+				gameState.movedThisFrame = 1;
+			} else {
+				gameState.nextDirection = UP;
+			}
+			menuState.intTextIndex -= 1; 
+        } else { 
+            /* down swipe */
+			if (!(gameState.lastDirection===UP) && !gameState.movedThisFrame){			
+				gameState.direction = DOWN;
+				gameState.movedThisFrame = 1;
+			} else {
+				gameState.nextDirection = DOWN;
+			}
+			menuState.intTextIndex += 1;
+        }                                                                 
+    }
+    /* reset values */
+    xDown = null;
+    yDown = null;                                             
+};
