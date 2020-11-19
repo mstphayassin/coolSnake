@@ -777,7 +777,7 @@ const play = () => {
 		}
 	}
 	if (gameState.survival){
-		if (!gameState.dead && gameState.spawnCounter > gameState.spawnRate && gameState.score > SNAKEGROWTH && gameState.sharks.length < Math.min(25, Math.sqrt(gameState.scoreTime*0.5))){
+		if (!gameState.dead && gameState.spawnCounter > gameState.spawnRate && gameState.score > SNAKEGROWTH && gameState.sharks.length < Math.min(15, Math.sqrt(gameState.scoreTime*0.5))){
 			gameState.spawnCounter = 0;
 			let newSharks = []
 			/*
@@ -898,7 +898,7 @@ const play = () => {
 				shark.dead = true;
 				explodeSound.stop();
 				explodeSound.play()
-				gameState.appleGet = Math.ceil(shark.bod.length/2);
+				gameState.appleGet = Math.ceil(shark.bod.length*0.8);
 				for (let b = 0; b < shark.bod.length; b++){
 					gameState.particleList.push(new Particles(shark.bod[b][0],shark.bod[b][1],PARTICLEVEL/2,RED2,PARTICLESIZE))
 				}
@@ -924,7 +924,7 @@ const play = () => {
 			shark.dead = true;
 			explodeSound.stop();
 			explodeSound.play();
-			gameState.appleGet = Math.ceil(shark.bod.length/2);
+			gameState.appleGet = Math.ceil(shark.bod.length);
 			for (let b = 0; b < shark.bod.length; b++){
 				gameState.particleList.push(new Particles(shark.bod[b][0],shark.bod[b][1],PARTICLEVEL/2,RED2,PARTICLESIZE))
 				gameState.colorList.push(COLORCHOICES[Math.floor(Math.random()*COLORCHOICES.length)]);
