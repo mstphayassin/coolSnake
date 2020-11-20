@@ -566,6 +566,8 @@ const play = () => {
 		if (gameState.snakePos !== gameState.snakeList[gameState.snakeList.length-1]){
 			gameState.snakePos = gameState.snakeList[gameState.snakeList.length-1];
 		}
+	} else {
+		gameState.snakePos = [Infinity, Infinity]
 	}
 	if (gameState.dead){
 		gameState.snakeList = [];
@@ -637,25 +639,6 @@ const play = () => {
 			}
 		}
 		
-		if (gameState.appleGet <= 0){
-			if (gameState.snakeList.length > 0){
-				gameState.snakeList.shift()
-			} else {
-				if (!gameState.dead){
-					gameState.dead = true;
-					gameState.scoreTime = 0
-					deathSound.stop();
-					deathSound.play();
-					for (let b in gameState.snakeList){
-						let pcol = gameState.colorList[b];
-						gameState.particleList.push(new Particles(gameState.snakeList[b][0],gameState.snakeList[b][1],PARTICLEVEL,pcol));
-					}
-					gameState.Cam.shakeAmp = CAMERASHAKE;
-					gameState.snakeList = [];
-					gameState.colorList = [];
-				}
-			}
-		}
 		let insideMyself = false;
 		if (gameState.snakeList.indexOf(gameState.snakePos) !== -1 && !gameState.dead){
 			let _i = 1;
@@ -692,9 +675,28 @@ const play = () => {
 				insideMyself = true;
 			}
 		}
-		if (!insideMyself && !gameState.dead) {
+		if (!insideMyself && !gameState.dead && gameState.snakeList.length) {
 			gameState.snakeList.push(gameState.snakePos);
 			gameState.lastDirection = gameState.direction;
+		}
+		if (gameState.appleGet <= 0){
+			if (gameState.snakeList.length > 0){
+				gameState.snakeList.shift()
+			} else {
+				if (!gameState.dead){
+					gameState.dead = true;
+					gameState.scoreTime = 0
+					deathSound.stop();
+					deathSound.play();
+					for (let b in gameState.snakeList){
+						let pcol = gameState.colorList[b];
+						gameState.particleList.push(new Particles(gameState.snakeList[b][0],gameState.snakeList[b][1],PARTICLEVEL,pcol));
+					}
+					gameState.Cam.shakeAmp = CAMERASHAKE;
+					gameState.snakeList = [];
+					gameState.colorList = [];
+				}
+			}
 		}
 		if (gameState.nextDirection && !(gameState.nextDirection === RIGHT && gameState.lastDirection ===LEFT || gameState.nextDirection === UP && gameState.lastDirection === DOWN || gameState.nextDirection === LEFT && gameState.lastDirection === RIGHT || gameState.nextDirection === DOWN && gameState.lastDirection === UP)){
 			gameState.direction = gameState.nextDirection;
@@ -894,7 +896,7 @@ const play = () => {
 		let kols = shark.bod.map(cols);
 		if (shark.bod.some(cols) && (!shark.wall || shark.dead)){
 			gameState.appleGet = 1;
-			if (shark.bod[kols.indexOf(true)] === shark.pos || shark.bod[kols.indexOf(true)] === shark.bod[shark.bod.length-2] && !shark.ranged){
+			if ((shark.bod[kols.indexOf(true)] === shark.pos || shark.bod[kols.indexOf(true)] === shark.bod[shark.bod.length-2] && !shark.ranged) && (!shark.isFastShark || (shark.dir && shark.dir !== gameState.direction))){
 				shark.dead = true;
 				explodeSound.stop();
 				explodeSound.play()
@@ -924,7 +926,7 @@ const play = () => {
 			shark.dead = true;
 			explodeSound.stop();
 			explodeSound.play();
-			gameState.appleGet = Math.ceil(shark.bod.length);
+			gameState.appleGet = Math.ceil(shark.bod.length*1.2);
 			for (let b = 0; b < shark.bod.length; b++){
 				gameState.particleList.push(new Particles(shark.bod[b][0],shark.bod[b][1],PARTICLEVEL/2,RED2,PARTICLESIZE))
 				gameState.colorList.push(COLORCHOICES[Math.floor(Math.random()*COLORCHOICES.length)]);

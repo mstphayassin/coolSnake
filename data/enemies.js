@@ -128,6 +128,7 @@ class FastShark extends Shark {
 	constructor(){
 		super();
 		this.fast = true;
+		this.isFastShark = true
 		this.targetLen = 6;
 		this.moveFreq = 1; // should be 2
 		this.dir = [UP,DOWN,LEFT,RIGHT][Math.floor(Math.random()*4)];
